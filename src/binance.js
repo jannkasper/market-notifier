@@ -34,8 +34,8 @@ const createAlert = function(currentNews) {
     if (/Binance Will List/.test(currentNews.text)) {
         const tokenArray = currentNews.text.match(new RegExp(/Binance Will List(.*)\(/ ));
         const tokenName = tokenArray[1].trim()
-            .replaceAll(" ", "-")
-            .replaceAll(".", "-")
+            .replace(/ /g, '-')
+            .replace(/./, '-')
             .toLowerCase();
         if (process.env.NODE_ENV === 'development') {
             console.log("OPEN")

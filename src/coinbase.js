@@ -34,8 +34,8 @@ const createAlert = function(currentNews) {
      if (/launching on || now available/.test(currentNews.text)) {
           const tokenName = currentNews.text.substring(0, currentNews.text.indexOf('('))
               .trim()
-              .replaceAll(" ", "-")
-              .replaceAll(".", "-")
+              .replace(/ /g, '-')
+              .replace(/./, '-')
               .toLowerCase();
           if (process.env.NODE_ENV === 'development') {
                console.log("OPEN")
