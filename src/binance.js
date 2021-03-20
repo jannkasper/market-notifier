@@ -17,7 +17,7 @@ const determineFirstArticle = async function() {
 
 
 let latestNews = await determineFirstArticle();
-// latestNews = {url : 'en/support/announcement/1d7f2144fce04615aa78eeb93331adc01', text: 'Binance Will List Perpetual Protocol (PERP) in the Innovation Zone'}
+latestNews = {url : 'en/support/announcement/1d7f2144fce04615aa78eeb93331adc01', text: 'Binance Will List Perpetual Protocol (PERP) in the Innovation Zone'}
 
 const createAlert = function(currentNews) {
     notifier.notify({

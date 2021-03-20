@@ -16,7 +16,7 @@ async function determineFirstArticle() {
 }
 
 let latestNews = await determineFirstArticle();
-// latestNews = {url : 'polygon-matic-skale-network-skl-and-sushiswap-sushi-are-launching-on-coinbase-pro-460f410b3820', text: 'Polygon (MATIC), SKALE (SKL) and SushiSwap (SUSHI) are launching on Coinbase Pro'}
+latestNews = {url : 'polygon-matic-skale-network-skl-and-sushiswap-sushi-are-launching-on-coinbase-pro-460f410b3820', text: 'Polygon (MATIC), SKALE (SKL) and SushiSwap (SUSHI) are launching on Coinbase Pro'}
 
 
 const createAlert = function(currentNews) {
