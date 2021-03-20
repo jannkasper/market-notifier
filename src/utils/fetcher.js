@@ -26,7 +26,7 @@ export const binanceFetch = axios.create({
 });
 
 
-export const coinbaseURL = "https://www.interia.pl/"
+export const coinbaseURL = "https://blog.coinbase.com/"
 
 export const coinbaseHeader = {
     'authority': 'blog.coinbase.com',

@@ -18,8 +18,6 @@ export const sendEmail = function (market, text, link, link2) {
         text: `LINK: ${link}\nLINK: ${link2}`
     };
 
-    console.log(mailOptions)
-
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
             console.log(error);
