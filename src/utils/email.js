@@ -1,16 +1,48 @@
-import nodemailer from "nodemailer";
 import dotenv from 'dotenv'
 dotenv.config()
+import nodemailer from "nodemailer";
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
+const createTransporter = async () => {
+    const oauth2Client = new OAuth2(
+        process.env.CLIENT_ID,
+        process.env.CLIENT_SECRET,
+        "https://developers.google.com/oauthplayground"
+    );
 
-export const sendEmail = function (market, text, link, link2) {
+    oauth2Client.setCredentials({
+        refresh_token: process.env.REFRESH_TOKEN
+    });
+
+    const accessToken = await new Promise((resolve, reject) => {
+        oauth2Client.getAccessToken((err, token) => {
+            if (err) {
+                reject();
+            }
+            resolve(token);
+        });
+    });
+
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            type: "OAuth2",
+            user: process.env.EMAIL,
+            accessToken,
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN
+        }
+    });
+
+    return transporter;
+};
+
+
+export const sendEmail = async function (market, text, link, link2) {
+    let emailTransporter = await createTransporter();
+
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_RECEIVER,
@@ -18,7 +50,7 @@ export const sendEmail = function (market, text, link, link2) {
         text: `LINK: ${link}\nLINK: ${link2}`
     };
 
-    transporter.sendMail(mailOptions, function(error, info){
+    await emailTransporter.sendMail(mailOptions, function(error, info){
         if (error) {
             console.log(error);
         } else {
@@ -26,4 +58,3 @@ export const sendEmail = function (market, text, link, link2) {
         }
     });
 }
-
