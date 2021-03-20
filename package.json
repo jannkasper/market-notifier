@@ -1,0 +1,28 @@
+{
+  "name": "market-notifier",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "src/binance.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/coinbase.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.5",
+    "dotenv": "^8.2.0",
+    "got": "^9.6.0",
+    "node-notifier": "^9.0.1",
+    "nodemailer": "^6.5.0",
+    "open": "^8.0.3",
+    "puppeteer": "^8.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}
