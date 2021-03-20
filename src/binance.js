@@ -17,11 +17,10 @@ const determineFirstArticle = async function() {
 
 
 let latestNews = await determineFirstArticle();
-latestNews = {url : 'en/support/announcement/1d7f2144fce04615aa78eeb93331adc01', text: 'Binance Will List Perpetual Protocol (PERP) in the Innovation Zone'}
+// latestNews = {url : 'en/support/announcement/1d7f2144fce04615aa78eeb93331adc01', text: 'Binance Will List Perpetual Protocol (PERP) in the Innovation Zone'}
 
 const createAlert = function(currentNews) {
     if (process.env.NODE_ENV === 'development') {
-        console.log("NOTIFIER")
         notifier.notify({
             title: "BINANCE ALERT",
             message: currentNews.text,
@@ -38,11 +37,9 @@ const createAlert = function(currentNews) {
             .replace(/./, '-')
             .toLowerCase();
         if (process.env.NODE_ENV === 'development') {
-            console.log("OPEN")
             open(binanceURL + currentNews.url);
             open('https://www.coingecko.com/en/coins/' + tokenName + '#markets');
         }
-        console.log("EMAIL")
         sendEmail('BINANCE', currentNews.text, binanceURL + currentNews.url, 'https://www.coingecko.com/en/coins/' + tokenName + '#markets');
         // clearInterval(intervalRef);
     }
