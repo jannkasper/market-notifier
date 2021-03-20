@@ -20,13 +20,16 @@ latestNews = {url : 'polygon-matic-skale-network-skl-and-sushiswap-sushi-are-lau
 
 
 const createAlert = function(currentNews) {
-     notifier.notify({
-          title: "COINBASE ALERT",
-          message: currentNews.text,
-          sound: "SMS",
-          timeout: 60000,
-          open: coinbaseURL + currentNews.url,
-     });
+     if (process.env.NODE_ENV === 'development') {
+          console.log("NOTIFIER")
+          notifier.notify({
+               title: "COINBASE ALERT",
+               message: currentNews.text,
+               sound: "SMS",
+               timeout: 60000,
+               open: coinbaseURL + currentNews.url,
+          });
+     }
 
      if (/launching on || now available/.test(currentNews.text)) {
           const tokenName = currentNews.text.substring(0, currentNews.text.indexOf('('))
@@ -34,8 +37,12 @@ const createAlert = function(currentNews) {
               .replaceAll(" ", "-")
               .replaceAll(".", "-")
               .toLowerCase();
-          open(coinbaseURL + currentNews.url);
-          open('https://www.coingecko.com/en/coins/' + tokenName + '#markets');
+          if (process.env.NODE_ENV === 'development') {
+               console.log("OPEN")
+               open(coinbaseURL + currentNews.url);
+               open('https://www.coingecko.com/en/coins/' + tokenName + '#markets');
+          }
+          console.log("EMAIL")
           sendEmail('COINBASE', currentNews.text, coinbaseURL + currentNews.url, 'https://www.coingecko.com/en/coins/' + tokenName + '#markets');
      }
      latestNews = currentNews;
