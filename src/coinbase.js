@@ -34,7 +34,7 @@ const createAlert = function(currentNews) {
           const tokenName = currentNews.text.substring(0, currentNews.text.indexOf('('))
               .trim()
               .replace(/ /g, '-')
-              .replace(/./, '-')
+              .replace(/\./, '-')
               .toLowerCase();
           if (process.env.NODE_ENV === 'development') {
                open(coinbaseURL + currentNews.url);
@@ -54,7 +54,7 @@ const determineAlert = async function() {
 }
 
 const run = function () {
-     const intervalRef = setInterval(determineAlert, 10000);
+     const intervalRef = setInterval(determineAlert, 5000);
 }
 
 export default run
