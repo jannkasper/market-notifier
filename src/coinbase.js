@@ -55,7 +55,7 @@ const determineAlert = async function() {
 }
 
 const run = function () {
-     const intervalRef = setInterval(determineAlert, 5000);
+     const intervalRef = setInterval(determineAlert, 3000);
 }
 
 export default run
