@@ -40,7 +40,7 @@ const readCoinFromString = function (title) {
 }
 
 let latestArticle = await determineCoinbaseLatestArticle();
-latestArticle = { market:"Coinbase" ,title: "Ankr (ANKR) Curve DAO Token (CRV) and Storj (STORJ) are launching on Coinbase Pro", createdAt:1615913006441, publishedAt:1616518976265, url:"https://medium.com/p/62dbd9208d7c1" };
+// latestArticle = { market:"Coinbase" ,title: "Ankr (ANKR) Curve DAO Token (CRV) and Storj (STORJ) are launching on Coinbase Pro", createdAt:1615913006441, publishedAt:1616518976265, url:"https://medium.com/p/62dbd9208d7c1" };
 
 const determineAlert = async function() {
      const currentArticle = await determineCoinbaseLatestArticle();
