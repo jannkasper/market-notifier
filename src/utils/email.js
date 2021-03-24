@@ -39,18 +39,17 @@ const createTransporter = async () => {
     return transporter;
 };
 
-
-export const sendEmail = async function (market, text, link, link2) {
+export const sendEmail = async function (market, text, link, link2, date) {
     let emailTransporter = await createTransporter();
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_RECEIVER,
-        subject: `${market}: ${text}`,
-        text: `LINK: ${link}\nLINK: ${link2}`
+        subject: `${market.toUpperCase()}: ${text}`,
+        text: `LINK: ${link}\nLINK: ${link2}\nCREATED: ${new Date(date).toLocaleTimeString("pl-PL")}`
     };
 
-    await emailTransporter.sendMail(mailOptions, function(error, info){
+    await emailTransporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(error);
         } else {

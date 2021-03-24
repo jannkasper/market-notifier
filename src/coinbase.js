@@ -1,55 +1,56 @@
-import notifier from "node-notifier";
-import open from "open";
-import { startBrowser } from "./utils/session.js";
-const { browser, page } = await startBrowser();
-import { sendEmail } from "./utils/email.js";
+import axios from "axios";
+import { algoliaHeader, handleFetchError } from "./utils/fetcher.js";
+import { sortByKey } from "./utils/utils.js";
+import { createAlert } from "./utils/alert.js";
 
-const coinbaseURL = 'https://blog.coinbase.com/';
-
-async function determineFirstArticle() {
-     await page.goto(coinbaseURL + 'latest', { waitUntil: 'networkidle0' });
-     return await page.evaluate(() => document.body.innerHTML)
-         .then(bodyHTML => bodyHTML.match(/\{"references"(.*)]}\)/))
-         .then(bodyHTML => bodyHTML[0].slice(0, -1))
-         .then(bodyHTML => JSON.parse(bodyHTML))
-         .then(bodyJSON => {return { createdAt: bodyJSON.posts[0].createdAt, text: bodyJSON.posts[0].title, url: bodyJSON.posts[0].uniqueSlug, }})
-}
-
-let latestNews = await determineFirstArticle();
-// latestNews = {url : 'polygon-matic-skale-network-skl-and-sushiswap-sushi-are-launching-on-coinbase-pro-460f410b3820', text: 'Polygon (MATIC), SKALE (SKL) and SushiSwap (SUSHI) are launching on Coinbase Pro'}
-
-
-const createAlert = function(currentNews) {
-     if (process.env.NODE_ENV === 'development') {
-          notifier.notify({
-               title: "COINBASE ALERT",
-               message: currentNews.text,
-               sound: "SMS",
-               timeout: 60000,
-               open: coinbaseURL + currentNews.url,
-          });
-     }
-
-     if (/launching on || now available/.test(currentNews.text)) {
-          const tokenName = currentNews.text.substring(0, currentNews.text.indexOf('('))
-              .trim()
-              .replace(/ /g, '-')
-              .replace(/\./, '-')
-              .toLowerCase();
-          if (process.env.NODE_ENV === 'development') {
-               open(coinbaseURL + currentNews.url);
-               open('https://www.coingecko.com/en/coins/' + tokenName + '#markets');
+const determineCoinbaseLatestArticle = async function () {
+     // const data = {requests: [{indexName: "medium_post", params: "query=a&hitsPerPage=1000&facetFilters=collectionId%3Ac114225aeaf7&attributesToRetrieve=%2A%2Ctitle%2CpostId%2ClatestPublishedAt&sortFacetValuesBy="}]}
+     const data = {requests: [{indexName: "medium_post", params: "query=launching%20on%20Coinbase&hitsPerPage=100&facetFilters=collectionId%3Ac114225aeaf7&attributesToRetrieve=%2A%2Ctitle%2CpostId%2ClatestPublishedAt&sortFacetValuesBy="}]}
+     return await axios.post("https://mq57uuuqz2-dsn.algolia.net/1/indexes/*/queries", data, {headers: algoliaHeader}).then(response => {
+          if (response.data.results && response.data.results[0].hits) {
+               const resultArray = response.data.results[0].hits;
+               const sortedArray = resultArray.sort(sortByKey('createdAt'));
+               const mappedArray = sortedArray;
+               // const mappedArray = sortedArray.map(item => { return {...item, createdAt:new Date(item.createdAt).toLocaleString("pl-PL"), firstPublishedAt: new Date(item.firstPublishedAt).toLocaleString("pl-PL") }});
+               const item =  mappedArray[mappedArray.length-1];
+               return {
+                    market: "Coinbase",
+                    title: item.title,
+                    createdAt: item.createdAt,
+                    publishedAt: item.firstPublishedAt,
+                    url: `https://medium.com/p/${item.postId}`
+               }
+          } else {
+               console.log("Coinbase: Fetch ERROR 'response.data.data.latestArticles[0] = NULL'")
+               return null;
           }
-          sendEmail('COINBASE', currentNews.text, coinbaseURL + currentNews.url, 'https://www.coingecko.com/en/coins/' + tokenName + '#markets');
-     }
-     latestNews = currentNews;
+     }).catch(handleFetchError);
 }
+
+const readCoinFromString = function (title) {
+     const tokenName = title.substring(0, title.indexOf('('))
+         .trim()
+         .replace(/ /g, '-')
+         .replace(/\./, '-')
+         .toLowerCase();
+
+     const matches = title.match(/\((.*?)\)/);
+     const tokenCode = matches.length > 0 && matches[1];
+     return { tokenName, tokenCode };
+}
+
+let latestArticle = await determineCoinbaseLatestArticle();
+latestArticle = { market:"Coinbase" ,title: "Ankr (ANKR) Curve DAO Token (CRV) and Storj (STORJ) are launching on Coinbase Pro", createdAt:1615913006441, publishedAt:1616518976265, url:"https://medium.com/p/62dbd9208d7c1" };
 
 const determineAlert = async function() {
-     const currentNews = await determineFirstArticle();
-     console.log(new Date().toLocaleString() + ' | CoinBase -> ' + currentNews.text);
-     if (currentNews.url !== latestNews.url) {
-          createAlert(currentNews);
+     const currentArticle = await determineCoinbaseLatestArticle();
+     if (!currentArticle) {
+          return
+     }
+     console.log(new Date().toLocaleString() + ' | CoinBase -> ' + currentArticle.title);
+     if (latestArticle.url !== currentArticle.url) {
+          createAlert(currentArticle, readCoinFromString);
+          latestArticle = currentArticle;
      }
 }
 
