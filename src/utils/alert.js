@@ -29,21 +29,20 @@ export const createAlert = function(currentArticle, readCoinFromString) {
 }
 
 const openTradingPages = async function (tokenCode){
-    const openMxc = await axios.get(`https://www.mxc.com/open/api/v2/market/ticker?symbol=${tokenCode.toUpperCase()}_USDT`)
-        .then(response => response.data);
-    if (openMxc) {
-        open(`https://www.mxc.com/trade/easy#${tokenCode.toUpperCase()}_USDT`);
-    }
+    axios.get(`https://www.mxc.com/open/api/v2/market/ticker?symbol=${tokenCode.toUpperCase()}_USDT`)
+        .then(response => {
+            if (Boolean(response.data)) {
+                open(`https://www.mxc.com/trade/easy#${tokenCode.toUpperCase()}_USDT`);
+        }});
 
-    const openGate =  await axios.get(`https://data.gateapi.io/api2/1/ticker/${tokenCode.toLowerCase()}_usdt`)
-        .then(response => response.data && response.data.result);
-    if (openGate) {
-        open(`https://www.gate.io/trade/${tokenCode.toUpperCase()}_USDT`);
-    }
+    // axios.get(`https://data.gateapi.io/api2/1/ticker/${tokenCode.toLowerCase()}_usdt`)
+    //     .then(response => { if (Boolean(response.data && response.data.result)) {
+    //         open(`https://www.gate.io/trade/${tokenCode.toUpperCase()}_USDT`) ;
+    //     }});
 
-    const openHuobi =  await axios.get(`https://api.huobi.pro/market/detail/merged?symbol=${tokenCode.toLowerCase()}usdt`)
-        .then(response => response.data && response.data.status === 'ok');
-    if (openHuobi) {
-        open(`https://www.huobi.com/en-us/exchange/?s=${tokenCode.toLowerCase()}_usdt`);
-    }
+    axios.get(`https://api.huobi.pro/market/detail/merged?symbol=${tokenCode.toLowerCase()}usdt`)
+        .then(response =>{
+            if (Boolean(response.data && response.data.status === 'ok')) {
+                open(`https://www.huobi.com/en-us/exchange/?s=${tokenCode.toLowerCase()}_usdt`);
+        }});
 }

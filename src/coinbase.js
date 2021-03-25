@@ -49,8 +49,8 @@ const determineAlert = async function() {
      }
      console.log(new Date().toLocaleString() + ' | CoinBase -> ' + currentArticle.title);
      if (latestArticle.url !== currentArticle.url) {
-          createAlert(currentArticle, readCoinFromString);
           latestArticle = currentArticle;
+          createAlert(currentArticle, readCoinFromString);
      }
 }
 

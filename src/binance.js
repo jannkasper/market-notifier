@@ -42,12 +42,12 @@ const determineAlert = async function() {
     }
     console.log(new Date().toLocaleString() + ' | Binance -> ' + currentArticle.title);
     if (latestArticle.url !== currentArticle.url) {
+        latestArticle = currentArticle;
         if (/Binance Will List/.test(currentArticle.title)) {
             createAlert(currentArticle, readCoinFromString);
         } else if (process.env.NODE_ENV === 'development') {
             sendNotification(currentArticle);
         }
-        latestArticle = currentArticle;
     }
 }
 

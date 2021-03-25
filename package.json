@@ -9,7 +9,7 @@
     "start": "node src/index.js",
     "binance": "NODE_ENV=development node src/binance.js",
     "coinbase": "NODE_ENV=development node src/coinbase.js",
-    "dev": "NODE_ENV=development nodemon src/coinbase.js"
+    "dev": "NODE_ENV=development node src/index.js"
   },
   "keywords": [],
   "author": "",
