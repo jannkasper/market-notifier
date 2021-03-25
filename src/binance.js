@@ -40,7 +40,6 @@ const determineAlert = async function() {
     if (!currentArticle) {
         return
     }
-    currentArticle.title = 'Binance Will List Perpetual Protocol (PERP) in the Innovation Zone'
     console.log(new Date().toLocaleString() + ' | Binance -> ' + currentArticle.title);
     if (latestArticle.url !== currentArticle.url) {
         if (/Binance Will List/.test(currentArticle.title)) {
