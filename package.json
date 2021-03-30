@@ -9,7 +9,8 @@
     "start": "node src/index.js",
     "binance": "NODE_ENV=development node src/binance.js",
     "coinbase": "NODE_ENV=development node src/coinbase.js",
-    "dev": "NODE_ENV=development node src/index.js"
+    "dev": "NODE_ENV=development node src/index.js",
+    "cal": "NODE_ENV=development nodemon src/cal.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "open": "^8.0.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "puppeteer": "^8.0.0"
   }
 }

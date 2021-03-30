@@ -33,16 +33,19 @@ const readCoinFromString = function (title) {
 
 let latestArticle = await determineBinanceLatestArticle();
 // latestArticle = { market:"Coinbase" ,title: "Ankr (ANKR) Curve DAO Token (CRV) and Storj (STORJ) are launching on Coinbase Pro", createdAt:1615913006441, publishedAt:1616518976265, url:"https://medium.com/p/62dbd9208d7c" };
-
+let isPause = false;
 
 const determineAlert = async function() {
     const currentArticle = await determineBinanceLatestArticle();
-    if (!currentArticle) {
+    if (!currentArticle || isPause) {
         return
     }
     console.log(new Date().toLocaleString() + ' | Binance -> ' + currentArticle.title);
+
     if (latestArticle.url !== currentArticle.url) {
         latestArticle = currentArticle;
+        isPause = true
+        setTimeout(function(){ isPause = false }, 1000 * 30); // 30sec
         if (/Binance Will List/.test(currentArticle.title)) {
             createAlert(currentArticle, readCoinFromString);
         } else if (process.env.NODE_ENV === 'development') {
@@ -52,7 +55,7 @@ const determineAlert = async function() {
 }
 
 const run = function () {
-    const intervalRef = setInterval(determineAlert, 3000);
+    const intervalRef = setInterval(determineAlert, 2000);
 }
 
 export default run
